@@ -1,0 +1,1815 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nicolás de Módena — Inmobiliaria en Punta del Este</title>
+  <meta name="description" content="Más de 25 años en el mercado inmobiliario uruguayo. Venta y alquiler de propiedades exclusivas en Punta del Este, José Ignacio, La Barra y Montevideo." />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ════════════════════════════════════════════════════════
+       NICOLÁS DE MÓDENA — Premium Real Estate
+       Brand blue #084C9C · Sora + Outfit · GSAP/Lenis
+       ════════════════════════════════════════════════════════ */
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      /* Brand (real, extracted from current site) */
+      --blue:        #084C9C;
+      --blue-bright: #0d65d0;
+      --blue-deep:   #063D7D;
+      --green:       #12b34e;
+
+      /* Neutrals built around brand navy */
+      --navy:    #07142b;
+      --navy-2:  #0b1d3d;
+      --navy-3:  #112a52;
+      --ink:     #0a1424;
+      --ink-2:   #2a3a52;
+      --paper:   #ffffff;
+      --mist:    #f1f6fd;
+      --mist-2:  #e4eefb;
+      --line:    #dbe6f4;
+      --line-dk: rgba(255,255,255,0.10);
+      --line-dk2:rgba(255,255,255,0.16);
+
+      /* Text on dark */
+      --on-dark:      #eef4fc;
+      --on-dark-mute: #9fb3cf;
+      --on-dark-dim:  #6b819f;
+
+      --font-display: 'Sora', system-ui, sans-serif;
+      --font-body:    'Outfit', system-ui, sans-serif;
+
+      --e-out:  cubic-bezier(0.22, 1, 0.36, 1);
+      --e-expo: cubic-bezier(0.16, 1, 0.3, 1);
+      --e-io:   cubic-bezier(0.65, 0.05, 0.36, 1);
+
+      --r:   14px;
+      --r-lg: 22px;
+
+      --pad: clamp(1.25rem, 5vw, 6rem);
+      --maxw: 1480px;
+
+      --z-progress: 90;
+      --z-nav: 100;
+      --z-pop: 120;
+      --z-overlay: 200;
+    }
+
+    html { -webkit-text-size-adjust: 100%; }
+    /* Lenis adds .lenis to html when active; this keeps native fallback fine */
+    html.lenis, html.lenis body { height: auto; }
+    .lenis.lenis-smooth { scroll-behavior: auto !important; }
+    html:not(.lenis) { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--font-body);
+      background: var(--paper);
+      color: var(--ink);
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+
+    a { color: inherit; }
+    img { display: block; max-width: 100%; }
+    ::selection { background: var(--blue); color: #fff; }
+
+    /* ─── Scroll progress bar ─────────────────────────────── */
+    .progress {
+      position: fixed;
+      top: 0; left: 0;
+      height: 3px;
+      width: 100%;
+      transform: scaleX(0);
+      transform-origin: 0 50%;
+      background: linear-gradient(90deg, var(--blue), var(--blue-bright));
+      z-index: var(--z-progress);
+    }
+
+    /* ─── Premium custom arrow cursor ─────────────────────── */
+    .cursor-arrow {
+      position: fixed; top: 0; left: 0;
+      width: 26px; height: 26px;
+      pointer-events: none; z-index: 9999;
+      opacity: 0;
+      transition: opacity 0.3s;
+      will-change: transform;
+    }
+    .cursor-ready .cursor-arrow { opacity: 1; }
+    .cursor-arrow-inner {
+      display: block;
+      transform-origin: 5px 4px;
+      transition: transform 0.22s var(--e-out);
+    }
+    .cursor-arrow-inner svg { display: block; filter: drop-shadow(0 3px 7px rgba(4,14,35,0.45)); }
+    .cursor-arrow.is-hover .cursor-arrow-inner { transform: scale(1.45) rotate(-8deg); }
+    .cursor-arrow.is-down .cursor-arrow-inner { transform: scale(0.85); }
+    /* Label that appears over draggable gallery / cards */
+    .cursor-arrow-label {
+      position: absolute;
+      top: 26px; left: 12px;
+      white-space: nowrap;
+      font-family: var(--font-body);
+      font-size: 10px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase;
+      color: #fff; background: var(--blue);
+      padding: 0.3rem 0.6rem; border-radius: 100px;
+      opacity: 0; transform: scale(0.8) translateY(-4px); transform-origin: left top;
+      transition: opacity 0.2s, transform 0.2s var(--e-out);
+    }
+    .cursor-arrow.is-drag .cursor-arrow-label { opacity: 1; transform: scale(1) translateY(0); }
+    body.cursor-none *:not(input):not(textarea):not(select) { cursor: none !important; }
+    @media (hover: none), (pointer: coarse) { .cursor-arrow { display: none; } }
+    @media (prefers-reduced-motion: reduce) { .cursor-arrow { display: none; } }
+
+    /* ─── NAV ─────────────────────────────────────────────── */
+    .nav {
+      position: fixed;
+      inset: 0 0 auto 0;
+      z-index: var(--z-nav);
+      height: 84px;
+      padding: 0 var(--pad);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      transition: height 0.4s var(--e-out), background 0.4s var(--e-out),
+                  backdrop-filter 0.4s, border-color 0.4s, box-shadow 0.4s;
+      border-bottom: 1px solid transparent;
+    }
+    .nav.scrolled {
+      height: 66px;
+      background: rgba(7, 20, 43, 0.86);
+      backdrop-filter: blur(20px) saturate(1.5);
+      -webkit-backdrop-filter: blur(20px) saturate(1.5);
+      border-color: var(--line-dk);
+      box-shadow: 0 8px 40px rgba(3, 12, 28, 0.4);
+    }
+
+    .nav-logo { display: flex; align-items: center; height: 100%; cursor: pointer; }
+    .nav-logo img {
+      height: 58px;
+      width: auto;
+      transition: height 0.4s var(--e-out);
+    }
+    .nav.scrolled .nav-logo img { height: 48px; }
+
+    .nav-links { display: flex; align-items: center; gap: clamp(1.2rem, 2.5vw, 2.6rem); list-style: none; }
+    .nav-links a {
+      font-size: 13px;
+      font-weight: 500;
+      letter-spacing: 0.01em;
+      color: var(--on-dark);
+      text-decoration: none;
+      position: relative;
+      padding: 0.3rem 0;
+      transition: color 0.25s;
+    }
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      left: 0; bottom: -2px;
+      width: 100%;
+      height: 1.5px;
+      background: var(--blue-bright);
+      transform: scaleX(0);
+      transform-origin: 0 50%;
+      transition: transform 0.35s var(--e-out);
+    }
+    .nav-links a:hover { color: #fff; }
+    .nav-links a:hover::after { transform: scaleX(1); }
+
+    .nav-right { display: flex; align-items: center; gap: 1.25rem; }
+
+    .nav-phone {
+      display: flex; align-items: center; gap: 0.5rem;
+      font-size: 13px; font-weight: 500; color: var(--on-dark-mute);
+      text-decoration: none; transition: color 0.25s;
+    }
+    .nav-phone:hover { color: #fff; }
+
+    .nav-wa {
+      display: flex; align-items: center; gap: 0.5rem;
+      font-size: 13px; font-weight: 600; color: var(--green);
+      text-decoration: none; transition: color 0.25s, opacity 0.25s;
+    }
+    .nav-wa:hover { color: #2ed06e; }
+
+    .btn {
+      display: inline-flex; align-items: center; gap: 0.55rem;
+      font-family: var(--font-body);
+      font-size: 13px; font-weight: 600; letter-spacing: 0.01em;
+      border: none; cursor: pointer; text-decoration: none;
+      border-radius: 100px;
+      padding: 0.85rem 1.6rem;
+      transition: transform 0.25s var(--e-out), background 0.25s, color 0.25s, box-shadow 0.25s;
+      white-space: nowrap;
+    }
+    .btn svg { transition: transform 0.25s var(--e-out); }
+    .btn-blue { background: var(--blue); color: #fff; box-shadow: 0 6px 22px rgba(8, 76, 156, 0.35); }
+    .btn-blue:hover { background: var(--blue-bright); transform: translateY(-2px); box-shadow: 0 10px 30px rgba(8, 76, 156, 0.45); }
+    .btn-blue:hover svg { transform: translateX(3px); }
+    .btn-ghost { background: rgba(255,255,255,0.07); color: #fff; border: 1px solid var(--line-dk2); }
+    .btn-ghost:hover { background: rgba(255,255,255,0.14); transform: translateY(-2px); }
+    .btn-outline-ink { background: transparent; color: var(--ink); border: 1.5px solid var(--line); }
+    .btn-outline-ink:hover { border-color: var(--blue); color: var(--blue); transform: translateY(-2px); }
+    .btn-green { background: var(--green); color: #fff; box-shadow: 0 6px 22px rgba(18,179,78,0.3); }
+    .btn-green:hover { background: #0e9a42; transform: translateY(-2px); }
+    .btn-lg { padding: 1.05rem 2rem; font-size: 14px; }
+
+    .nav-burger { display: none; background: none; border: none; cursor: pointer; flex-direction: column; gap: 5px; padding: 8px; }
+    .nav-burger span { width: 24px; height: 2px; background: #fff; transition: transform 0.3s, opacity 0.3s; }
+
+    /* ─── HERO ─────────────────────────────────────────────── */
+    .hero {
+      position: relative;
+      min-height: 100svh;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      background: var(--navy);
+      padding-top: clamp(104px, 13vh, 140px);
+      padding-bottom: clamp(2rem, 5vh, 4rem);
+    }
+    .hero-bg {
+      position: absolute;
+      inset: -8% 0 0 0;
+      height: 116%;
+      z-index: 0;
+      overflow: hidden;
+      will-change: transform;
+    }
+    .hero-bg-img {
+      position: absolute; inset: 0;
+      width: 100%; height: 100%;
+      object-fit: cover;
+      opacity: 0;
+      transition: opacity 1.6s var(--e-expo);
+    }
+    .hero-bg-img.active { opacity: 1; }
+    .hero-bg::after {
+      content: '';
+      position: absolute; inset: 0;
+      background:
+        linear-gradient(to bottom, rgba(7,20,43,0.55) 0%, rgba(7,20,43,0.15) 30%, rgba(7,20,43,0.45) 68%, rgba(7,20,43,0.92) 100%),
+        linear-gradient(105deg, rgba(7,20,43,0.7) 0%, transparent 55%);
+    }
+
+    .hero-inner {
+      position: relative;
+      z-index: 2;
+      width: 100%;
+      max-width: var(--maxw);
+      margin: 0 auto;
+      padding: 0 var(--pad);
+    }
+
+    .hero-eyebrow {
+      display: inline-flex; align-items: center; gap: 0.65rem;
+      font-size: 12px; font-weight: 500; letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--on-dark);
+      margin-bottom: 1.5rem;
+      padding: 0.5rem 1rem 0.5rem 0.85rem;
+      border: 1px solid var(--line-dk2);
+      border-radius: 100px;
+      background: rgba(255,255,255,0.05);
+      backdrop-filter: blur(8px);
+    }
+    .hero-eyebrow .diamond {
+      width: 8px; height: 8px;
+      background: linear-gradient(135deg, var(--blue-bright), #5aa0f0);
+      transform: rotate(45deg);
+      box-shadow: 0 0 12px rgba(13,101,208,0.7);
+    }
+
+    /* Rotating headline */
+    .hero-title {
+      position: relative;
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: clamp(2.2rem, 5vw, 4.6rem);
+      line-height: 1.04;
+      letter-spacing: -0.03em;
+      color: #fff;
+      max-width: 18ch;
+      min-height: var(--rot-h, 2.2em);
+    }
+    .rot-phrase {
+      position: absolute;
+      inset: 0;
+      display: block;
+      pointer-events: none;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.5s var(--e-out), visibility 0.5s;
+    }
+    .rot-phrase.active { opacity: 1; visibility: visible; pointer-events: auto; }
+    .rot-word {
+      display: inline-block;
+      white-space: pre;
+      will-change: transform, opacity, filter;
+    }
+    /* Static fallback if JS/animation off */
+    .rot-phrase.active::before {
+      content: attr(data-text);
+    }
+    .rot-phrase.js-split.active::before { content: none; }
+
+    .hero-sub {
+      margin-top: 1.6rem;
+      font-size: clamp(15px, 1.3vw, 18px);
+      font-weight: 300;
+      line-height: 1.65;
+      color: var(--on-dark-mute);
+      max-width: 50ch;
+    }
+
+    .hero-actions { margin-top: 2.2rem; display: flex; flex-wrap: wrap; gap: 1rem; align-items: center; }
+
+    /* ─── HERO SEARCH SELECTOR ────────────────────────────── */
+    .search {
+      position: relative;
+      z-index: 60;
+      width: 100%;
+      max-width: var(--maxw);
+      margin: 2.6rem auto 0;
+      padding: 0 var(--pad);
+    }
+    .search-card {
+      background: rgba(255,255,255,0.97);
+      backdrop-filter: blur(20px);
+      border-radius: var(--r-lg);
+      box-shadow: 0 30px 80px rgba(4, 14, 35, 0.5);
+      border: 1px solid rgba(255,255,255,0.6);
+      overflow: visible;
+    }
+
+    /* Property type tabs */
+    .search-tabs {
+      display: flex;
+      gap: 0.25rem;
+      padding: 0.5rem 0.5rem 0;
+      flex-wrap: wrap;
+      border-bottom: 1px solid var(--line);
+    }
+    .search-tab {
+      font-family: var(--font-body);
+      font-size: 13.5px; font-weight: 500;
+      color: var(--ink-2);
+      background: none; border: none; cursor: pointer;
+      padding: 0.85rem 1.15rem;
+      border-radius: 10px 10px 0 0;
+      position: relative;
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      transition: color 0.2s, background 0.2s;
+      white-space: nowrap;
+    }
+    .search-tab svg { width: 17px; height: 17px; opacity: 0.6; transition: opacity 0.2s; }
+    .search-tab:hover { color: var(--blue); background: var(--mist); }
+    .search-tab:hover svg { opacity: 1; }
+    .search-tab.active { color: var(--blue); font-weight: 600; }
+    .search-tab.active svg { opacity: 1; }
+    .search-tab.active::after {
+      content: '';
+      position: absolute; left: 0.6rem; right: 0.6rem; bottom: -1px;
+      height: 2.5px; background: var(--blue); border-radius: 2px;
+    }
+
+    /* Fields row */
+    .search-fields {
+      display: grid;
+      grid-template-columns: 1.1fr 1.4fr 0.9fr auto;
+      align-items: stretch;
+    }
+    .field {
+      position: relative;
+      padding: 1.05rem 1.4rem;
+      border-right: 1px solid var(--line);
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .field:hover { background: var(--mist); }
+    .field-label {
+      display: block;
+      font-size: 11px; font-weight: 600; letter-spacing: 0.08em;
+      text-transform: uppercase; color: var(--ink-2);
+      margin-bottom: 0.3rem;
+    }
+    .field-value {
+      display: flex; align-items: center; justify-content: space-between; gap: 0.5rem;
+      font-size: 15px; font-weight: 500; color: var(--ink);
+    }
+    .field-value .chev { width: 16px; height: 16px; color: var(--blue); transition: transform 0.25s var(--e-out); flex-shrink: 0; }
+    .field.open .field-value .chev { transform: rotate(180deg); }
+
+    .field-pop {
+      position: absolute;
+      top: calc(100% + 8px); left: 0.5rem; right: 0.5rem;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: var(--r);
+      box-shadow: 0 24px 60px rgba(4,14,35,0.22);
+      padding: 0.4rem;
+      z-index: var(--z-pop);
+      opacity: 0; visibility: hidden;
+      transform: translateY(-6px);
+      transition: opacity 0.2s, transform 0.2s var(--e-out), visibility 0.2s;
+      max-height: 280px; overflow-y: auto;
+    }
+    .field.open .field-pop { opacity: 1; visibility: visible; transform: translateY(0); }
+    .pop-item {
+      padding: 0.7rem 0.9rem;
+      font-size: 14px; font-weight: 500; color: var(--ink-2);
+      border-radius: 9px; cursor: pointer;
+      transition: background 0.15s, color 0.15s;
+    }
+    .pop-item:hover { background: var(--mist); color: var(--blue); }
+    .pop-item.selected { background: var(--blue); color: #fff; }
+
+    .search-submit {
+      display: flex; align-items: center; justify-content: center; gap: 0.6rem;
+      background: var(--blue);
+      color: #fff;
+      border: none; cursor: pointer;
+      font-family: var(--font-body); font-size: 15px; font-weight: 600;
+      padding: 0 2.4rem;
+      margin: 0.55rem;
+      border-radius: var(--r);
+      transition: background 0.25s, transform 0.2s;
+    }
+    .search-submit:hover { background: var(--blue-bright); transform: translateY(-1px); }
+
+    .hero-foot {
+      position: relative; z-index: 2;
+      width: 100%; max-width: var(--maxw); margin: 1.6rem auto 0;
+      padding: 0 var(--pad);
+      display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+    }
+    .hero-foot-stats { display: flex; gap: clamp(1.5rem, 4vw, 3rem); }
+    .hero-foot-stat { color: var(--on-dark-mute); font-size: 13px; }
+    .hero-foot-stat b { display: block; font-family: var(--font-display); font-size: 22px; font-weight: 700; color: #fff; letter-spacing: -0.02em; }
+    .hero-slide-dots { display: flex; gap: 0.5rem; }
+    .hero-slide-dots button { width: 30px; height: 3px; border-radius: 3px; border: none; background: rgba(255,255,255,0.3); cursor: pointer; transition: background 0.3s, width 0.3s; }
+    .hero-slide-dots button.active { background: var(--blue-bright); width: 46px; }
+
+    /* ─── MARQUEE TRUST STRIP ─────────────────────────────── */
+    .marquee {
+      background: var(--navy);
+      border-top: 1px solid var(--line-dk);
+      border-bottom: 1px solid var(--line-dk);
+      overflow: hidden;
+      padding: 1.4rem 0;
+      white-space: nowrap;
+    }
+    .marquee-track {
+      display: inline-flex; align-items: center; gap: 3.5rem;
+      animation: marquee 32s linear infinite;
+    }
+    .marquee-item {
+      display: inline-flex; align-items: center; gap: 0.8rem;
+      font-family: var(--font-display); font-size: 15px; font-weight: 500;
+      color: var(--on-dark-mute); letter-spacing: 0.02em;
+    }
+    .marquee-item .star { color: var(--blue-bright); }
+    @keyframes marquee { to { transform: translateX(-50%); } }
+
+    /* ─── SECTION SHELL ───────────────────────────────────── */
+    .section { padding: clamp(4.5rem, 9vw, 9rem) var(--pad); max-width: var(--maxw); margin: 0 auto; }
+    .section-dark { background: var(--navy); color: var(--on-dark); max-width: none; }
+    .section-dark .section-inner { max-width: var(--maxw); margin: 0 auto; }
+
+    .head { display: flex; align-items: flex-end; justify-content: space-between; gap: 2rem; margin-bottom: clamp(2.5rem, 5vw, 4rem); }
+    .head-kicker {
+      display: inline-flex; align-items: center; gap: 0.6rem;
+      font-size: 12px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase;
+      color: var(--blue);
+      margin-bottom: 1rem;
+    }
+    .head-kicker .bar { width: 26px; height: 1.5px; background: var(--blue); }
+    .section-dark .head-kicker { color: var(--blue-bright); }
+    .section-dark .head-kicker .bar { background: var(--blue-bright); }
+    .h2 {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: clamp(2rem, 4vw, 3.4rem);
+      line-height: 1.05;
+      letter-spacing: -0.03em;
+      color: var(--ink);
+      text-wrap: balance;
+      max-width: 18ch;
+    }
+    .section-dark .h2 { color: #fff; }
+    .head-link {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      font-size: 13px; font-weight: 600; color: var(--blue);
+      text-decoration: none; white-space: nowrap; flex-shrink: 0;
+      transition: gap 0.25s;
+    }
+    .section-dark .head-link { color: var(--blue-bright); }
+    .head-link:hover { gap: 0.85rem; }
+
+    /* ─── FEATURED — horizontal scroll ────────────────────── */
+    .featured { background: var(--mist); overflow: hidden; }
+    .h-pin {
+      min-height: 100vh;
+      min-height: 100svh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: clamp(1.5rem, 3vw, 2.5rem);
+      padding: clamp(2rem, 6vh, 4.5rem) 0;
+      background: var(--mist);
+    }
+    .featured-head { width: 100%; max-width: var(--maxw); margin: 0 auto; padding: 0 var(--pad); }
+    .h-scroll { position: relative; }
+    .h-track {
+      display: flex;
+      gap: 1.5rem;
+      padding: 0 var(--pad);
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+    }
+    .h-track::-webkit-scrollbar { display: none; }
+    .h-track.gsap-on { overflow: visible; }
+
+    .pcard {
+      position: relative;
+      flex: 0 0 clamp(290px, 32vw, 430px);
+      aspect-ratio: 4/5;
+      border-radius: var(--r-lg);
+      overflow: hidden;
+      scroll-snap-align: center;
+      cursor: pointer;
+      background: var(--navy-2);
+      box-shadow: 0 18px 50px rgba(8,30,70,0.18);
+    }
+    .pcard img {
+      width: 100%; height: 100%; object-fit: cover;
+      transition: transform 0.9s var(--e-expo), filter 0.6s;
+      filter: brightness(0.92);
+    }
+    .pcard:hover img { transform: scale(1.06); filter: brightness(1); }
+    .pcard::after {
+      content: ''; position: absolute; inset: 0;
+      background: linear-gradient(to top, rgba(7,20,43,0.9) 0%, rgba(7,20,43,0.2) 45%, transparent 70%);
+    }
+    .pcard-badge {
+      position: absolute; top: 1.1rem; left: 1.1rem; z-index: 2;
+      display: inline-flex; align-items: center; gap: 0.4rem;
+      font-size: 11px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase;
+      color: #fff; padding: 0.4rem 0.8rem; border-radius: 100px;
+      background: rgba(8,76,156,0.85); backdrop-filter: blur(6px);
+    }
+    .pcard-badge.sale { background: rgba(18,179,78,0.9); }
+    .pcard-fav {
+      position: absolute; top: 1rem; right: 1rem; z-index: 2;
+      width: 38px; height: 38px; border-radius: 50%;
+      display: grid; place-items: center;
+      background: rgba(255,255,255,0.15); backdrop-filter: blur(8px);
+      border: 1px solid rgba(255,255,255,0.25);
+      color: #fff; cursor: pointer; transition: background 0.25s, transform 0.25s;
+    }
+    .pcard-fav:hover { background: rgba(255,255,255,0.3); transform: scale(1.08); }
+    .pcard-body { position: absolute; left: 0; right: 0; bottom: 0; z-index: 2; padding: 1.6rem; }
+    .pcard-loc { font-size: 12.5px; font-weight: 400; color: var(--on-dark-mute); letter-spacing: 0.03em; margin-bottom: 0.35rem; display:flex; align-items:center; gap:0.35rem;}
+    .pcard-name { font-family: var(--font-display); font-size: 1.4rem; font-weight: 600; color: #fff; line-height: 1.15; letter-spacing: -0.01em; margin-bottom: 0.9rem; }
+    .pcard-meta { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding-top: 0.9rem; border-top: 1px solid rgba(255,255,255,0.15); }
+    .pcard-price { font-family: var(--font-display); font-size: 1.2rem; font-weight: 700; color: #fff; letter-spacing: -0.01em; }
+    .pcard-specs { display: flex; gap: 0.9rem; }
+    .pcard-spec { display: flex; align-items: center; gap: 0.3rem; font-size: 12.5px; color: var(--on-dark-mute); }
+    .pcard-spec svg { width: 15px; height: 15px; }
+
+    .h-hint { width: 100%; max-width: var(--maxw); margin: 0 auto; padding: 0 var(--pad); display: flex; align-items: center; gap: 0.6rem; color: var(--ink-2); font-size: 13px; font-weight: 500; }
+    .h-hint .drag { display: inline-flex; align-items: center; gap: 0.4rem; color: var(--blue); }
+
+    /* ─── PROJECTS ────────────────────────────────────────── */
+    .projects-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; }
+    .proj {
+      position: relative; aspect-ratio: 3/4.1; border-radius: var(--r-lg); overflow: hidden; cursor: pointer;
+      background: var(--navy-3);
+    }
+    .proj img { width: 100%; height: 100%; object-fit: cover; transition: transform 1s var(--e-expo); filter: brightness(0.7); }
+    .proj:hover img { transform: scale(1.07); filter: brightness(0.8); }
+    .proj::after { content:''; position:absolute; inset:0; background: linear-gradient(to top, rgba(5,15,35,0.92) 0%, rgba(5,15,35,0.1) 55%, transparent 80%); }
+    .proj-body { position: absolute; inset: auto 0 0 0; z-index: 2; padding: 1.8rem; }
+    .proj-status { display: inline-flex; align-items:center; gap:0.45rem; font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--blue-bright); margin-bottom: 0.7rem; }
+    .proj-status .pulse { width:7px; height:7px; border-radius:50%; background: var(--green); box-shadow: 0 0 8px var(--green); }
+    .proj-name { font-family: var(--font-display); font-size: 1.65rem; font-weight: 600; color: #fff; line-height: 1.1; margin-bottom: 0.4rem; letter-spacing: -0.01em; }
+    .proj-loc { font-size: 13px; color: var(--on-dark-mute); margin-bottom: 1.1rem; }
+    .proj-cta { display: inline-flex; align-items:center; gap: 0.5rem; font-size: 12.5px; font-weight: 600; color: #fff; text-decoration: none; opacity: 0; transform: translateY(8px); transition: opacity 0.35s, transform 0.35s var(--e-out), gap 0.25s; }
+    .proj:hover .proj-cta { opacity: 1; transform: translateY(0); }
+    .proj-cta:hover { gap: 0.8rem; color: var(--blue-bright); }
+
+    /* ─── STORY CHAPTER (About + Zones premium wrapper) ───── */
+    .chapter {
+      position: relative;
+      background:
+        radial-gradient(1100px 600px at 88% -5%, rgba(13,101,208,0.10), transparent 60%),
+        radial-gradient(900px 500px at -10% 110%, rgba(8,76,156,0.08), transparent 55%),
+        linear-gradient(180deg, #ffffff 0%, var(--mist) 45%, #ffffff 100%);
+      overflow: hidden;
+    }
+    .chapter::before {
+      content: '';
+      position: absolute; inset: 0;
+      background-image: radial-gradient(rgba(8,76,156,0.06) 1px, transparent 1px);
+      background-size: 26px 26px;
+      -webkit-mask-image: radial-gradient(800px 500px at 50% 18%, #000, transparent 75%);
+      mask-image: radial-gradient(800px 500px at 50% 18%, #000, transparent 75%);
+      pointer-events: none;
+    }
+    .chapter > .section, .chapter > .section-inner { position: relative; z-index: 1; }
+
+    /* ─── ABOUT ───────────────────────────────────────────── */
+    .about { display: grid; grid-template-columns: 1.05fr 1fr; gap: clamp(2.5rem, 6vw, 6.5rem); align-items: center; }
+    .about-visual { position: relative; padding: 0 2.4rem 2.8rem 0; }
+    .about-frame {
+      position: relative; aspect-ratio: 4/4.6; border-radius: var(--r-lg);
+      overflow: hidden; box-shadow: 0 30px 70px rgba(8,30,70,0.22);
+    }
+    .about-frame img { width: 100%; height: 116%; object-fit: cover; position: absolute; inset: -8% 0 0 0; will-change: transform; }
+    /* secondary overlapping image */
+    .about-sub {
+      position: absolute; right: 0; bottom: 0; z-index: 3;
+      width: 46%; aspect-ratio: 4/3.4;
+      border-radius: var(--r); overflow: hidden;
+      border: 5px solid #fff;
+      box-shadow: 0 22px 50px rgba(8,30,70,0.28);
+    }
+    .about-sub img { width: 100%; height: 100%; object-fit: cover; }
+    /* accent frame line behind */
+    .about-accent {
+      position: absolute; left: -1.4rem; top: 1.4rem; z-index: 0;
+      width: 55%; height: 60%;
+      border: 1.5px solid var(--blue); border-radius: var(--r-lg);
+      opacity: 0.5;
+    }
+    /* glass est. card */
+    .about-est {
+      position: absolute; left: 1.4rem; bottom: 3.6rem; z-index: 4;
+      background: rgba(7,20,43,0.62); backdrop-filter: blur(16px) saturate(1.4);
+      border: 1px solid rgba(255,255,255,0.22);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.18), 0 16px 40px rgba(4,14,35,0.4);
+      border-radius: var(--r);
+      padding: 1rem 1.3rem; color: #fff;
+    }
+    .about-est b { font-family: var(--font-display); font-size: 1.9rem; font-weight: 700; display: block; letter-spacing: -0.02em; line-height: 1; }
+    .about-est span { font-size: 11.5px; color: var(--on-dark-mute); letter-spacing: 0.04em; }
+
+    .about-text { font-size: clamp(15px, 1.2vw, 17px); font-weight: 300; line-height: 1.75; color: var(--ink-2); max-width: 46ch; margin: 1.5rem 0 2.2rem; }
+    .about-metrics { display: grid; grid-template-columns: 1fr 1fr; gap: 1.4rem 1.8rem; margin-bottom: 2.2rem; }
+    .metric { padding-top: 0.9rem; border-top: 1.5px solid var(--line); }
+    .metric b { font-family: var(--font-display); font-size: clamp(1.8rem, 3vw, 2.4rem); font-weight: 700; color: var(--blue); letter-spacing: -0.02em; line-height: 1; display: block; }
+    .metric span { font-size: 13px; color: var(--ink-2); margin-top: 0.4rem; display: block; }
+
+    /* founder pull quote */
+    .about-quote {
+      position: relative;
+      margin: 0 0 2.2rem;
+      padding: 1.4rem 0 0 0;
+      border-top: 1.5px solid var(--line);
+    }
+    .about-quote p {
+      font-family: var(--font-display); font-weight: 500;
+      font-size: clamp(1.05rem, 1.6vw, 1.35rem); line-height: 1.4;
+      color: var(--ink); letter-spacing: -0.01em; max-width: 30ch;
+    }
+    .about-quote footer { margin-top: 0.9rem; padding: 0; background: none; font-size: 13px; color: var(--ink-2); }
+    .about-quote footer b { color: var(--blue); font-weight: 600; }
+
+    /* ─── ZONES (premium bento, gap-free) ─────────────────── */
+    .zones-grid {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      grid-template-rows: clamp(210px, 24vw, 280px) clamp(210px, 24vw, 280px);
+      gap: 14px;
+    }
+    .zone { position: relative; border-radius: var(--r); overflow: hidden; cursor: pointer; }
+    .zone:nth-child(1) { grid-column: 1 / 4; grid-row: 1 / 3; }
+    .zone:nth-child(2) { grid-column: 4 / 7; grid-row: 1 / 2; }
+    .zone:nth-child(3) { grid-column: 4 / 5; grid-row: 2 / 3; }
+    .zone:nth-child(4) { grid-column: 5 / 6; grid-row: 2 / 3; }
+    .zone:nth-child(5) { grid-column: 6 / 7; grid-row: 2 / 3; }
+    .zone img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.9s var(--e-expo), filter 0.5s; filter: brightness(0.6) saturate(1.05); }
+    .zone:hover img { transform: scale(1.07); filter: brightness(0.74) saturate(1.1); }
+    .zone::after { content:''; position:absolute; inset:0; background: linear-gradient(to top, rgba(4,12,30,0.9) 0%, rgba(4,12,30,0.1) 55%, transparent 80%); }
+    .zone-index {
+      position: absolute; top: 1rem; left: 1.1rem; z-index: 2;
+      font-family: var(--font-display); font-size: 12px; font-weight: 600;
+      color: rgba(255,255,255,0.65); letter-spacing: 0.1em;
+    }
+    .zone-body { position: absolute; inset: auto 0 0 0; z-index: 2; padding: 1.3rem; }
+    .zone-name { font-family: var(--font-display); font-size: 1.15rem; font-weight: 600; color: #fff; letter-spacing: -0.01em; }
+    .zone:nth-child(1) .zone-name { font-size: clamp(1.5rem, 2.4vw, 2.1rem); }
+    .zone-meta { display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; margin-top: 0.35rem; }
+    .zone-count { font-size: 12.5px; color: var(--on-dark-mute); }
+    .zone-go {
+      width: 30px; height: 30px; border-radius: 50%;
+      display: grid; place-items: center; flex-shrink: 0;
+      background: rgba(255,255,255,0.14); border: 1px solid rgba(255,255,255,0.25); color: #fff;
+      opacity: 0; transform: translateX(-6px); transition: opacity 0.3s, transform 0.3s var(--e-out), background 0.3s;
+    }
+    .zone:hover .zone-go { opacity: 1; transform: translateX(0); }
+    .zone-go:hover { background: var(--blue); border-color: var(--blue); }
+
+    /* ─── SELL / CONTACT ──────────────────────────────────── */
+    .sell { background: var(--navy); color: var(--on-dark); max-width: none; position: relative; overflow: hidden; }
+    .sell::before {
+      content: ''; position: absolute; top: -30%; right: -10%;
+      width: 600px; height: 600px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(13,101,208,0.22), transparent 70%);
+      pointer-events: none;
+    }
+    .sell-inner { position: relative; z-index: 1; max-width: var(--maxw); margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: clamp(2.5rem, 6vw, 6rem); align-items: center; }
+    .sell-text .h2 { color: #fff; margin-bottom: 1.3rem; }
+    .sell-text p { font-size: clamp(15px,1.2vw,17px); font-weight: 300; line-height: 1.7; color: var(--on-dark-mute); max-width: 44ch; margin-bottom: 2rem; }
+    .sell-list { list-style: none; display: flex; flex-direction: column; gap: 1rem; margin-bottom: 2.5rem; }
+    .sell-list li { display: flex; align-items: center; gap: 0.9rem; font-size: 15px; color: var(--on-dark); }
+    .sell-list .ck { width: 26px; height: 26px; border-radius: 50%; background: rgba(18,179,78,0.16); color: var(--green); display: grid; place-items: center; flex-shrink: 0; }
+
+    .form { background: rgba(255,255,255,0.04); border: 1px solid var(--line-dk2); border-radius: var(--r-lg); padding: clamp(1.6rem, 3vw, 2.6rem); backdrop-filter: blur(10px); }
+    .form-title { font-family: var(--font-display); font-size: 1.35rem; font-weight: 600; color: #fff; margin-bottom: 0.35rem; }
+    .form-sub { font-size: 13.5px; color: var(--on-dark-mute); margin-bottom: 1.8rem; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .form-group { margin-bottom: 1.1rem; }
+    .form-label { display: block; font-size: 11.5px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--on-dark-dim); margin-bottom: 0.5rem; }
+    .form-input {
+      width: 100%; background: rgba(255,255,255,0.05); border: 1px solid var(--line-dk2);
+      border-radius: 10px; padding: 0.85rem 1rem;
+      font-family: var(--font-body); font-size: 14.5px; color: #fff; outline: none;
+      transition: border-color 0.25s, background 0.25s;
+    }
+    .form-input::placeholder { color: var(--on-dark-dim); }
+    .form-input:focus { border-color: var(--blue-bright); background: rgba(255,255,255,0.08); }
+    .form-note { margin-top: 0.9rem; font-size: 12px; color: var(--on-dark-dim); text-align: center; }
+
+    /* ─── PARTNERS ────────────────────────────────────────── */
+    .partners { background: var(--mist); padding: clamp(3rem,5vw,4.5rem) var(--pad); }
+    .partners-inner { max-width: var(--maxw); margin: 0 auto; display: flex; align-items: center; gap: clamp(1.5rem,4vw,4rem); flex-wrap: wrap; }
+    .partners-label { font-size: 12px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-2); flex-shrink: 0; }
+    .partners-logos { display: flex; align-items: center; gap: clamp(1.5rem,3vw,3rem); flex-wrap: wrap; }
+    .plogo { font-family: var(--font-display); font-size: 1.05rem; font-weight: 600; color: #8aa0bd; letter-spacing: 0.02em; transition: color 0.25s; cursor: default; }
+    .plogo:hover { color: var(--blue); }
+
+    /* ─── SUBFOOTER (offices) ─────────────────────────────── */
+    .subfooter { background: var(--navy); color: var(--on-dark); padding: clamp(3.5rem,7vw,6rem) var(--pad); }
+    .subfooter-inner { max-width: var(--maxw); margin: 0 auto; }
+    .subfooter-head { margin-bottom: clamp(2.2rem,4vw,3.2rem); }
+    .offices {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1px;
+      background: var(--line-dk);
+      border: 1px solid var(--line-dk);
+      border-radius: var(--r-lg);
+      overflow: hidden;
+    }
+    .office { background: var(--navy); padding: clamp(1.5rem,2.4vw,2.1rem); transition: background 0.3s; }
+    .office:hover { background: var(--navy-2); }
+    .office-name {
+      font-family: var(--font-display); font-size: 1.08rem; font-weight: 600;
+      color: #fff; letter-spacing: -0.01em; margin-bottom: 1.1rem;
+      display: flex; align-items: center; gap: 0.55rem;
+    }
+    .office-name svg { color: var(--blue-bright); flex-shrink: 0; }
+    .office-phones { display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 1.1rem; }
+    .office-phone {
+      display: inline-flex; align-items: center; gap: 0.55rem;
+      font-size: 13.5px; font-weight: 500; color: var(--on-dark);
+      text-decoration: none; transition: color 0.25s; width: fit-content;
+    }
+    .office-phone svg { flex-shrink: 0; }
+    .office-phone.is-tel svg { color: var(--blue-bright); }
+    .office-phone.is-cel svg { color: var(--green); }
+    .office-phone:hover { color: #fff; }
+    .office-addr { font-size: 13px; font-weight: 300; line-height: 1.6; color: var(--on-dark-mute); }
+
+    /* ─── FOOTER ──────────────────────────────────────────── */
+    footer { background: var(--ink); color: var(--on-dark); padding: clamp(3.5rem,7vw,6rem) var(--pad) 2.5rem; }
+    .foot-inner { max-width: var(--maxw); margin: 0 auto; }
+    .foot-top { display: grid; grid-template-columns: 1.6fr 1fr 1fr 1.2fr; gap: clamp(2rem,4vw,4rem); padding-bottom: 3.5rem; border-bottom: 1px solid var(--line-dk); }
+    .foot-logo img { height: 84px; width: auto; margin-bottom: 1.5rem; }
+    .foot-desc { font-size: 14px; font-weight: 300; line-height: 1.7; color: var(--on-dark-mute); max-width: 32ch; }
+    .foot-col h4 { font-size: 12px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--on-dark-dim); margin-bottom: 1.3rem; }
+    .foot-col ul { list-style: none; display: flex; flex-direction: column; gap: 0.8rem; }
+    .foot-col a { font-size: 14px; font-weight: 300; color: var(--on-dark-mute); text-decoration: none; transition: color 0.25s; }
+    .foot-col a:hover { color: var(--blue-bright); }
+    .foot-contact-item { font-size: 14px; font-weight: 300; color: var(--on-dark-mute); line-height: 1.55; margin-bottom: 1rem; }
+    .foot-contact-item strong { display: block; font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--on-dark-dim); margin-bottom: 0.25rem; }
+    .foot-bottom { padding-top: 2rem; display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
+    .foot-copy { font-size: 12.5px; color: var(--on-dark-dim); }
+    .foot-social { display: flex; gap: 1.3rem; }
+    .foot-social a { font-size: 12.5px; font-weight: 500; color: var(--on-dark-mute); text-decoration: none; transition: color 0.25s; }
+    .foot-social a:hover { color: var(--blue-bright); }
+
+    /* ─── REVEAL (IntersectionObserver, content-safe) ──────── */
+    .reveal { opacity: 0; transform: translateY(34px); transition: opacity 0.9s var(--e-out), transform 0.9s var(--e-out); }
+    .reveal.in { opacity: 1; transform: none; }
+    .reveal.d1 { transition-delay: 0.08s; }
+    .reveal.d2 { transition-delay: 0.16s; }
+    .reveal.d3 { transition-delay: 0.24s; }
+    .reveal.d4 { transition-delay: 0.32s; }
+    .reveal.d5 { transition-delay: 0.40s; }
+
+    /* ─── MOBILE MENU ─────────────────────────────────────── */
+    .mobile-menu {
+      position: fixed; inset: 0; z-index: var(--z-overlay);
+      background: rgba(7,20,43,0.98); backdrop-filter: blur(20px);
+      display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 1.5rem;
+      opacity: 0; visibility: hidden; transition: opacity 0.4s, visibility 0.4s;
+    }
+    .mobile-menu.open { opacity: 1; visibility: visible; }
+    .mobile-menu a { font-family: var(--font-display); font-size: 1.6rem; font-weight: 600; color: #fff; text-decoration: none; }
+    .mobile-menu .close { position: absolute; top: 1.5rem; right: 1.5rem; background: none; border: none; color: #fff; font-size: 2rem; cursor: pointer; }
+
+    /* ─── RESPONSIVE ──────────────────────────────────────── */
+    @media (max-width: 1240px) { .nav-wa { display: none; } }
+    @media (max-width: 1100px) {
+      .nav-phone { display: none; }
+      .search-fields { grid-template-columns: 1fr 1fr; }
+      .field:nth-child(2) { border-right: none; }
+      .search-submit { grid-column: 1 / -1; margin: 0.55rem; padding: 1rem; }
+      /* zones bento → 4-col compact */
+      .zones-grid {
+        grid-template-columns: repeat(4, 1fr);
+        grid-template-rows: clamp(180px, 30vw, 230px) clamp(180px, 30vw, 230px);
+      }
+      .zone:nth-child(1) { grid-column: 1 / 3; grid-row: 1 / 2; }
+      .zone:nth-child(2) { grid-column: 3 / 5; grid-row: 1 / 2; }
+      .zone:nth-child(3) { grid-column: 1 / 2; grid-row: 2 / 3; }
+      .zone:nth-child(4) { grid-column: 2 / 4; grid-row: 2 / 3; }
+      .zone:nth-child(5) { grid-column: 4 / 5; grid-row: 2 / 3; }
+      .offices { grid-template-columns: repeat(2, 1fr); }
+      .foot-top { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 860px) {
+      .nav-links, .nav-phone, .nav-wa { display: none; }
+      .nav-burger { display: flex; }
+      .about { grid-template-columns: 1fr; }
+      .about-visual { padding: 0 2rem 2.4rem 0; max-width: 540px; margin: 0 auto; }
+      .projects-grid { grid-template-columns: 1fr; }
+      .proj { aspect-ratio: 4/3; }
+      .sell-inner { grid-template-columns: 1fr; }
+      .hero-foot { flex-direction: column; align-items: flex-start; gap: 1.5rem; }
+    }
+    @media (max-width: 600px) {
+      .search-fields { grid-template-columns: 1fr; }
+      .field { border-right: none; border-bottom: 1px solid var(--line); }
+      .form-row { grid-template-columns: 1fr; }
+      .foot-top { grid-template-columns: 1fr; }
+      .head { flex-direction: column; align-items: flex-start; gap: 1rem; }
+      .about-metrics { grid-template-columns: 1fr 1fr; }
+      .hero-foot-stats { flex-wrap: wrap; }
+      /* zones → simple 2-col, even tiles, no gaps */
+      .zones-grid {
+        grid-template-columns: repeat(2, 1fr);
+        grid-template-rows: repeat(3, clamp(150px, 40vw, 200px));
+      }
+      .zone:nth-child(1) { grid-column: 1 / 3; grid-row: 1 / 2; }
+      .zone:nth-child(2) { grid-column: 1 / 2; grid-row: 2 / 3; }
+      .zone:nth-child(3) { grid-column: 2 / 3; grid-row: 2 / 3; }
+      .zone:nth-child(4) { grid-column: 1 / 2; grid-row: 3 / 4; }
+      .zone:nth-child(5) { grid-column: 2 / 3; grid-row: 3 / 4; }
+      .offices { grid-template-columns: 1fr; }
+    }
+
+    /* ─── REDUCED MOTION ──────────────────────────────────── */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+      .reveal { opacity: 1 !important; transform: none !important; }
+      .marquee-track { animation: none; }
+    }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar { width: 9px; }
+    ::-webkit-scrollbar-track { background: var(--mist); }
+    ::-webkit-scrollbar-thumb { background: #b9cce4; border-radius: 5px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--blue); }
+  </style>
+</head>
+<body>
+
+  <div class="progress" id="progress"></div>
+  <div class="cursor-arrow" id="cursorArrow" aria-hidden="true">
+    <span class="cursor-arrow-inner">
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none"><path d="M5 2.5 19.5 11l-6.6 1.7-3.2 6.6L5 2.5Z" fill="#084C9C" stroke="#fff" stroke-width="1.4" stroke-linejoin="round"/></svg>
+    </span>
+    <span class="cursor-arrow-label" id="cursorLabel">Deslizá</span>
+  </div>
+
+  <!-- NAV -->
+  <nav class="nav" id="nav">
+    <a class="nav-logo" href="#top" aria-label="Nicolás de Módena — Inicio">
+      <img src="logo-white-trim.png" alt="Nicolás de Módena Inmobiliaria" />
+    </a>
+    <ul class="nav-links">
+      <li><a href="#top">Inicio</a></li>
+      <li><a href="#propiedades">Propiedades</a></li>
+      <li><a href="#emprendimientos">Emprendimientos</a></li>
+      <li><a href="#nosotros">Nosotros</a></li>
+      <li><a href="#" aria-label="Agentes (sección no incluida en esta muestra)">Agentes</a></li>
+      <li><a href="#" aria-label="Blog (sección no incluida en esta muestra)">Blog</a></li>
+      <li><a href="#contacto">Contacto</a></li>
+    </ul>
+    <div class="nav-right">
+      <a href="tel:08001145" class="nav-phone">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+        0800 1145
+      </a>
+      <a href="https://wa.me/59892415537" class="nav-wa" aria-label="Escribinos al +598 92 415 537">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/></svg>
+        092 415 537
+      </a>
+      <a href="#contacto" class="btn btn-blue">Publicar propiedad</a>
+      <button class="nav-burger" id="burger" aria-label="Abrir menú"><span></span><span></span><span></span></button>
+    </div>
+  </nav>
+
+  <!-- MOBILE MENU -->
+  <div class="mobile-menu" id="mobileMenu">
+    <button class="close" id="mmClose" aria-label="Cerrar">&times;</button>
+    <a href="#top">Inicio</a>
+    <a href="#propiedades">Propiedades</a>
+    <a href="#emprendimientos">Emprendimientos</a>
+    <a href="#nosotros">Nosotros</a>
+    <a href="#">Agentes</a>
+    <a href="#">Blog</a>
+    <a href="#contacto">Contacto</a>
+    <a href="#contacto" class="btn btn-blue btn-lg" style="margin-top:1rem">Publicar propiedad</a>
+  </div>
+
+  <!-- HERO -->
+  <header class="hero" id="top">
+    <div class="hero-bg" id="heroBg">
+      <img class="hero-bg-img active" src="hero-1.png" alt="Vista aérea de la península de Punta del Este al atardecer" />
+      <img class="hero-bg-img" src="hero-2.png" alt="Puerto de Punta del Este con veleros al amanecer" />
+    </div>
+
+    <div class="hero-inner">
+      <span class="hero-eyebrow"><span class="diamond"></span>Elegidos por más de 3.200 familias e inversores</span>
+      <h1 class="hero-title" id="heroTitle" aria-label="Nicolás de Módena, inmobiliaria en Punta del Este" aria-live="polite">
+        <span class="rot-phrase active" data-text="Gracias por elegirnos"></span>
+        <span class="rot-phrase" data-text="Somos parte del Punta del Este de hoy"></span>
+        <span class="rot-phrase" data-text="Conocemos el mercado"></span>
+        <span class="rot-phrase" data-text="Lo ayudamos a concretar los mejores negocios"></span>
+      </h1>
+      <p class="hero-sub">Más de 25 años acompañando a familias e inversores en las decisiones inmobiliarias más importantes de su vida, en las zonas más exclusivas del país.</p>
+    </div>
+
+    <!-- SEARCH SELECTOR -->
+    <div class="search">
+      <div class="search-card">
+        <div class="search-tabs" id="searchTabs">
+          <button class="search-tab active" data-type="Apartamentos">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="2" width="16" height="20" rx="1"/><path d="M9 22v-4h6v4M8 6h.01M12 6h.01M16 6h.01M8 10h.01M12 10h.01M16 10h.01M8 14h.01M12 14h.01M16 14h.01"/></svg>
+            Apartamentos
+          </button>
+          <button class="search-tab" data-type="Casas">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/></svg>
+            Casas
+          </button>
+          <button class="search-tab" data-type="Chacras">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 22h20M4 22V11l8-6 8 6v11M9 22v-6h6v6"/><path d="M2 11h20"/></svg>
+            Chacras
+          </button>
+          <button class="search-tab" data-type="Campos">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 21h18M5 21V10M19 21V10M3 10l9-6 9 6M9 21v-5h6v5"/></svg>
+            Campos
+          </button>
+          <button class="search-tab" data-type="Locales">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 9l1-5h16l1 5M4 9v11a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1V9M3 9h18M9 21v-6h6v6"/></svg>
+            Locales
+          </button>
+          <button class="search-tab" data-type="Terrenos">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 6l9-3 9 3v12l-9 3-9-3z"/><path d="M3 6l9 3 9-3M12 9v12"/></svg>
+            Terrenos
+          </button>
+        </div>
+
+        <div class="search-fields">
+          <div class="field" data-field="op">
+            <span class="field-label">Operación</span>
+            <span class="field-value"><span class="fv-text">Comprar</span>
+              <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="m6 9 6 6 6-6"/></svg></span>
+            <div class="field-pop" data-lenis-prevent>
+              <div class="pop-item selected">Comprar</div>
+              <div class="pop-item">Alquilar</div>
+              <div class="pop-item">Alquiler temporario</div>
+              <div class="pop-item">Invertir</div>
+            </div>
+          </div>
+
+          <div class="field" data-field="zona">
+            <span class="field-label">Zona</span>
+            <span class="field-value"><span class="fv-text">Punta del Este</span>
+              <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="m6 9 6 6 6-6"/></svg></span>
+            <div class="field-pop" data-lenis-prevent>
+              <div class="pop-item selected">Punta del Este</div>
+              <div class="pop-item">José Ignacio</div>
+              <div class="pop-item">La Barra</div>
+              <div class="pop-item">Manantiales</div>
+              <div class="pop-item">Punta Ballena</div>
+              <div class="pop-item">Maldonado</div>
+              <div class="pop-item">Montevideo</div>
+              <div class="pop-item">Solanas</div>
+            </div>
+          </div>
+
+          <div class="field" data-field="dorm">
+            <span class="field-label">Dormitorios</span>
+            <span class="field-value"><span class="fv-text">Indistinto</span>
+              <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="m6 9 6 6 6-6"/></svg></span>
+            <div class="field-pop" data-lenis-prevent>
+              <div class="pop-item selected">Indistinto</div>
+              <div class="pop-item">Monoambiente</div>
+              <div class="pop-item">1 dormitorio</div>
+              <div class="pop-item">2 dormitorios</div>
+              <div class="pop-item">3 dormitorios</div>
+              <div class="pop-item">4+ dormitorios</div>
+            </div>
+          </div>
+
+          <button class="search-submit" type="button">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+            Buscar
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="hero-foot">
+      <div class="hero-foot-stats">
+        <div class="hero-foot-stat"><b data-count="25" data-suffix="+">0</b>Años de trayectoria</div>
+        <div class="hero-foot-stat"><b data-count="3200" data-suffix="+">0</b>Operaciones cerradas</div>
+        <div class="hero-foot-stat"><b data-count="98" data-suffix="%">0</b>Clientes satisfechos</div>
+      </div>
+      <div class="hero-slide-dots" id="heroDots">
+        <button class="active" aria-label="Imagen 1"></button>
+        <button aria-label="Imagen 2"></button>
+      </div>
+    </div>
+  </header>
+
+  <!-- MARQUEE -->
+  <div class="marquee" aria-hidden="true">
+    <div class="marquee-track">
+      <span class="marquee-item"><span class="star">✦</span> Propiedades exclusivas</span>
+      <span class="marquee-item"><span class="star">✦</span> Asesoramiento personalizado</span>
+      <span class="marquee-item"><span class="star">✦</span> Punta del Este</span>
+      <span class="marquee-item"><span class="star">✦</span> José Ignacio</span>
+      <span class="marquee-item"><span class="star">✦</span> Inversiones inmobiliarias</span>
+      <span class="marquee-item"><span class="star">✦</span> 25 años de experiencia</span>
+      <span class="marquee-item"><span class="star">✦</span> Propiedades exclusivas</span>
+      <span class="marquee-item"><span class="star">✦</span> Asesoramiento personalizado</span>
+      <span class="marquee-item"><span class="star">✦</span> Punta del Este</span>
+      <span class="marquee-item"><span class="star">✦</span> José Ignacio</span>
+      <span class="marquee-item"><span class="star">✦</span> Inversiones inmobiliarias</span>
+      <span class="marquee-item"><span class="star">✦</span> 25 años de experiencia</span>
+    </div>
+  </div>
+
+  <!-- FEATURED PROPERTIES (horizontal scroll) -->
+  <section class="featured" id="propiedades">
+   <div class="h-pin" id="hPin">
+    <div class="featured-head">
+      <div class="head" style="margin-bottom:0">
+        <div class="reveal">
+          <span class="head-kicker"><span class="bar"></span>Selección destacada</span>
+          <h2 class="h2">Propiedades que merecen una segunda mirada</h2>
+        </div>
+        <a href="#" class="head-link reveal d1">Ver todo el portfolio
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+        </a>
+      </div>
+    </div>
+
+    <div class="h-scroll">
+      <div class="h-track" id="hTrack">
+        <article class="pcard">
+          <img src="https://images.unsplash.com/photo-1600566753086-00f18fb6b3ea?auto=format&fit=crop&w=900&q=80" alt="Living luminoso de penthouse frente al mar en Playa Brava" loading="lazy" />
+          <span class="pcard-badge sale">En venta</span>
+          <button class="pcard-fav" aria-label="Guardar"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l1.1 1L12 21l7.7-7.6 1.1-1a5.5 5.5 0 0 0 0-7.8z"/></svg></button>
+          <div class="pcard-body">
+            <div class="pcard-loc"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Playa Brava · Punta del Este</div>
+            <h3 class="pcard-name">Penthouse Frente al Mar</h3>
+            <div class="pcard-meta">
+              <span class="pcard-price">USD 1.850.000</span>
+              <div class="pcard-specs">
+                <span class="pcard-spec"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 9V6a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v3M2 11h20v7M4 18v2M20 18v2"/></svg>4</span>
+                <span class="pcard-spec"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>320m²</span>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <article class="pcard">
+          <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=900&q=80" alt="Casa moderna con piscina y jardín en Cantegril" loading="lazy" />
+          <span class="pcard-badge">Premium</span>
+          <button class="pcard-fav" aria-label="Guardar"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l1.1 1L12 21l7.7-7.6 1.1-1a5.5 5.5 0 0 0 0-7.8z"/></svg></button>
+          <div class="pcard-body">
+            <div class="pcard-loc"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Cantegril · Punta del Este</div>
+            <h3 class="pcard-name">Casa con Vista al Golf</h3>
+            <div class="pcard-meta">
+              <span class="pcard-price">USD 2.200.000</span>
+              <div class="pcard-specs">
+                <span class="pcard-spec"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 9V6a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v3M2 11h20v7M4 18v2M20 18v2"/></svg>5</span>
+                <span class="pcard-spec"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>580m²</span>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <article class="pcard">
+          <img src="https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=900&q=80" alt="Interior de apartamento contemporáneo sobre la rambla" loading="lazy" />
+          <span class="pcard-badge sale">En venta</span>
+          <button class="pcard-fav" aria-label="Guardar"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l1.1 1L12 21l7.7-7.6 1.1-1a5.5 5.5 0 0 0 0-7.8z"/></svg></button>
+          <div class="pcard-body">
+            <div class="pcard-loc"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Rambla Artigas · Punta del Este</div>
+            <h3 class="pcard-name">Apartamento Roosevelt</h3>
+            <div class="pcard-meta">
+              <span class="pcard-price">USD 480.000</span>
+              <div class="pcard-specs">
+                <span class="pcard-spec"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 9V6a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v3M2 11h20v7M4 18v2M20 18v2"/></svg>2</span>
+                <span class="pcard-spec"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>98m²</span>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <article class="pcard">
+          <img src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=900&q=80" alt="Chalet de diseño rodeado de pinos en La Barra" loading="lazy" />
+          <span class="pcard-badge sale">En venta</span>
+          <button class="pcard-fav" aria-label="Guardar"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l1.1 1L12 21l7.7-7.6 1.1-1a5.5 5.5 0 0 0 0-7.8z"/></svg></button>
+          <div class="pcard-body">
+            <div class="pcard-loc"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Ruta 10 · La Barra</div>
+            <h3 class="pcard-name">Chalet La Barra</h3>
+            <div class="pcard-meta">
+              <span class="pcard-price">USD 1.100.000</span>
+              <div class="pcard-specs">
+                <span class="pcard-spec"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 9V6a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v3M2 11h20v7M4 18v2M20 18v2"/></svg>3</span>
+                <span class="pcard-spec"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>240m²</span>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <article class="pcard">
+          <img src="https://images.unsplash.com/photo-1502672023488-70e25813eb80?auto=format&fit=crop&w=900&q=80" alt="Chacra con laguna y campo abierto cerca de José Ignacio" loading="lazy" />
+          <span class="pcard-badge">Inversión</span>
+          <button class="pcard-fav" aria-label="Guardar"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l1.1 1L12 21l7.7-7.6 1.1-1a5.5 5.5 0 0 0 0-7.8z"/></svg></button>
+          <div class="pcard-body">
+            <div class="pcard-loc"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Laguna del Sauce · Maldonado</div>
+            <h3 class="pcard-name">Chacra frente a la Laguna</h3>
+            <div class="pcard-meta">
+              <span class="pcard-price">USD 890.000</span>
+              <div class="pcard-specs">
+                <span class="pcard-spec"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 9V6a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v3M2 11h20v7M4 18v2M20 18v2"/></svg>3</span>
+                <span class="pcard-spec"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>2.5 ha</span>
+              </div>
+            </div>
+          </div>
+        </article>
+      </div>
+    </div>
+
+    <div class="h-hint reveal">
+      <span class="drag">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M8 7 4 12l4 5M16 7l4 5-4 5M4 12h16"/></svg>
+        Deslizá
+      </span>
+      para explorar más propiedades
+    </div>
+   </div>
+  </section>
+
+  <!-- EMPRENDIMIENTOS -->
+  <section class="section section-dark" id="emprendimientos">
+    <div class="section-inner">
+      <div class="head">
+        <div class="reveal">
+          <span class="head-kicker"><span class="bar"></span>Obra nueva</span>
+          <h2 class="h2">Proyectos en construcción</h2>
+        </div>
+        <a href="#" class="head-link reveal d1">Ver todos los proyectos
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+        </a>
+      </div>
+
+      <div class="projects-grid">
+        <article class="proj reveal">
+          <img src="https://images.unsplash.com/photo-1486325212027-8081e485255e?auto=format&fit=crop&w=800&q=80" alt="Torre residencial de vidrio sobre la rambla Roosevelt" loading="lazy" />
+          <div class="proj-body">
+            <span class="proj-status"><span class="pulse"></span>En construcción · Entrega 2026</span>
+            <h3 class="proj-name">Wave Roosevelt</h3>
+            <p class="proj-loc">Rambla Roosevelt · Punta del Este</p>
+            <a href="#" class="proj-cta">Ver proyecto
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></a>
+          </div>
+        </article>
+
+        <article class="proj reveal d1">
+          <img src="https://images.unsplash.com/photo-1600047509807-ba8f99d2cdde?auto=format&fit=crop&w=800&q=80" alt="Fachada de edificio de lujo con balcones curvos" loading="lazy" />
+          <div class="proj-body">
+            <span class="proj-status"><span class="pulse"></span>Preventa · Entrega 2027</span>
+            <h3 class="proj-name">Fendi Chateau</h3>
+            <p class="proj-loc">Parada 25 · Punta del Este</p>
+            <a href="#" class="proj-cta">Ver proyecto
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></a>
+          </div>
+        </article>
+
+        <article class="proj reveal d2">
+          <img src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=800&q=80" alt="Casa contemporánea con grandes ventanales junto al mar" loading="lazy" />
+          <div class="proj-body">
+            <span class="proj-status"><span class="pulse"></span>En construcción · Entrega 2025</span>
+            <h3 class="proj-name">Eve Residences</h3>
+            <p class="proj-loc">Playa Brava · Punta del Este</p>
+            <a href="#" class="proj-cta">Ver proyecto
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></a>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- STORY CHAPTER: About + Zones -->
+  <div class="chapter">
+
+  <!-- ABOUT -->
+  <section class="section about" id="nosotros">
+    <div class="about-visual reveal">
+      <span class="about-accent" aria-hidden="true"></span>
+      <div class="about-frame">
+        <img id="aboutImg" src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=1000&q=80" alt="Interior cálido y luminoso de una residencia premium en Punta del Este" loading="lazy" />
+      </div>
+      <div class="about-sub">
+        <img src="https://images.unsplash.com/photo-1580587771525-78b9dba3b914?auto=format&fit=crop&w=700&q=80" alt="Casa de diseño con jardín al atardecer" loading="lazy" />
+      </div>
+      <div class="about-est">
+        <b>1998</b>
+        <span>Casa fundada</span>
+      </div>
+    </div>
+    <div class="about-body">
+      <div class="reveal">
+        <span class="head-kicker"><span class="bar"></span>Quiénes somos</span>
+        <h2 class="h2">Dos décadas conociendo cada rincón del mercado uruguayo</h2>
+      </div>
+      <p class="about-text reveal d1">Desde 1998, Nicolás de Módena es sinónimo de confianza, conocimiento real del mercado y acompañamiento sin presiones. Trabajamos con compradores, vendedores e inversores que valoran una experiencia cuidada de principio a fin.</p>
+      <div class="about-metrics reveal d2">
+        <div class="metric"><b data-count="3200" data-suffix="+">0</b><span>Operaciones concretadas</span></div>
+        <div class="metric"><b data-count="25" data-suffix="">0</b><span>Años en el mercado</span></div>
+        <div class="metric"><b data-count="12" data-suffix="">0</b><span>Asesores por zona</span></div>
+        <div class="metric"><b data-count="98" data-suffix="%">0</b><span>Satisfacción de clientes</span></div>
+      </div>
+      <blockquote class="about-quote reveal d3">
+        <p>"Acompañamos cada operación como si la propiedad fuera nuestra."</p>
+        <footer><b>Nicolás de Módena</b>, Director</footer>
+      </blockquote>
+      <a href="#contacto" class="btn btn-blue btn-lg reveal d3">Hablar con un asesor
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+      </a>
+    </div>
+  </section>
+
+  <!-- ZONES -->
+  <section class="section" id="zonas" style="padding-top:0">
+    <div class="head">
+      <div class="reveal">
+        <span class="head-kicker"><span class="bar"></span>Dónde operamos</span>
+        <h2 class="h2">Las zonas más buscadas de Uruguay</h2>
+      </div>
+      <a href="#" class="head-link reveal d1">Ver el mapa completo
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+      </a>
+    </div>
+    <div class="zones-grid reveal">
+      <article class="zone">
+        <img src="https://images.unsplash.com/photo-1535498730771-e735b998cd64?auto=format&fit=crop&w=900&q=80" alt="Skyline costero de Punta del Este al atardecer" loading="lazy" />
+        <span class="zone-index">01</span>
+        <div class="zone-body">
+          <div class="zone-name">Punta del Este</div>
+          <div class="zone-meta">
+            <span class="zone-count">+420 propiedades</span>
+            <span class="zone-go"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></span>
+          </div>
+        </div>
+      </article>
+      <article class="zone">
+        <img src="https://images.unsplash.com/photo-1502005229762-cf1b2da7c5d6?auto=format&fit=crop&w=800&q=80" alt="Casa de playa minimalista en José Ignacio" loading="lazy" />
+        <span class="zone-index">02</span>
+        <div class="zone-body">
+          <div class="zone-name">José Ignacio</div>
+          <div class="zone-meta">
+            <span class="zone-count">+85 propiedades</span>
+            <span class="zone-go"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></span>
+          </div>
+        </div>
+      </article>
+      <article class="zone">
+        <img src="https://images.unsplash.com/photo-1564013799919-ab600027ffc6?auto=format&fit=crop&w=600&q=80" alt="Residencia moderna entre pinos en La Barra" loading="lazy" />
+        <span class="zone-index">03</span>
+        <div class="zone-body">
+          <div class="zone-name">La Barra</div>
+          <div class="zone-meta"><span class="zone-count">+130</span>
+            <span class="zone-go"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></span>
+          </div>
+        </div>
+      </article>
+      <article class="zone">
+        <img src="https://images.unsplash.com/photo-1493809842364-78817add7ffb?auto=format&fit=crop&w=600&q=80" alt="Vista de la rambla y edificios de Montevideo" loading="lazy" />
+        <span class="zone-index">04</span>
+        <div class="zone-body">
+          <div class="zone-name">Montevideo</div>
+          <div class="zone-meta"><span class="zone-count">+260</span>
+            <span class="zone-go"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></span>
+          </div>
+        </div>
+      </article>
+      <article class="zone">
+        <img src="https://images.unsplash.com/photo-1416331108676-a22ccb276e35?auto=format&fit=crop&w=600&q=80" alt="Campo abierto al atardecer cerca de Manantiales" loading="lazy" />
+        <span class="zone-index">05</span>
+        <div class="zone-body">
+          <div class="zone-name">Manantiales</div>
+          <div class="zone-meta"><span class="zone-count">+60</span>
+            <span class="zone-go"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></span>
+          </div>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  </div><!-- /chapter -->
+
+  <!-- SELL / CONTACT -->
+  <section class="section sell" id="contacto">
+    <div class="sell-inner">
+      <div class="sell-text">
+        <div class="reveal">
+          <span class="head-kicker"><span class="bar"></span>Vendé o alquilá con nosotros</span>
+          <h2 class="h2">¿Tenés una propiedad? La presentamos como se merece</h2>
+        </div>
+        <p class="reveal d1">Fijamos el precio justo, la mostramos en su mejor versión y la conectamos con el comprador indicado. Sin vueltas, con resultados medibles.</p>
+        <ul class="sell-list reveal d2">
+          <li><span class="ck"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>Tasación profesional gratuita</li>
+          <li><span class="ck"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>Fotografía y video de alto nivel</li>
+          <li><span class="ck"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>Difusión en portales y red de clientes</li>
+        </ul>
+        <a href="https://wa.me/59899000000" class="btn btn-green btn-lg reveal d3">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/></svg>
+          Escribinos por WhatsApp
+        </a>
+      </div>
+
+      <div class="form reveal d2">
+        <h3 class="form-title">Consultanos sin compromiso</h3>
+        <p class="form-sub">Te respondemos en menos de 24 horas hábiles.</p>
+        <form onsubmit="return false">
+          <div class="form-row">
+            <div class="form-group"><label class="form-label" for="n">Nombre</label><input class="form-input" id="n" type="text" placeholder="Tu nombre" autocomplete="given-name" /></div>
+            <div class="form-group"><label class="form-label" for="a">Apellido</label><input class="form-input" id="a" type="text" placeholder="Tu apellido" autocomplete="family-name" /></div>
+          </div>
+          <div class="form-group"><label class="form-label" for="e">Correo electrónico</label><input class="form-input" id="e" type="email" placeholder="correo@ejemplo.com" autocomplete="email" /></div>
+          <div class="form-group"><label class="form-label" for="t">Teléfono</label><input class="form-input" id="t" type="tel" placeholder="+598 99 000 000" autocomplete="tel" /></div>
+          <div class="form-group"><label class="form-label" for="m">¿En qué podemos ayudarte?</label><input class="form-input" id="m" type="text" placeholder="Comprar, vender, alquilar..." /></div>
+          <button type="button" class="btn btn-blue btn-lg" style="width:100%; justify-content:center">Enviar consulta</button>
+          <p class="form-note">Tus datos no se comparten con terceros.</p>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- PARTNERS -->
+  <section class="partners">
+    <div class="partners-inner">
+      <span class="partners-label">Trabajamos con</span>
+      <div class="partners-logos">
+        <span class="plogo">HSBC</span>
+        <span class="plogo">Itaú</span>
+        <span class="plogo">Santander</span>
+        <span class="plogo">BROU</span>
+        <span class="plogo">Scotiabank</span>
+        <span class="plogo">Merrill Lynch</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- SUBFOOTER: OFFICES -->
+  <section class="subfooter">
+    <div class="subfooter-inner">
+      <div class="subfooter-head reveal">
+        <span class="head-kicker"><span class="bar"></span>Nuestras oficinas</span>
+        <h2 class="h2" style="color:#fff">Estamos donde nos necesitás</h2>
+      </div>
+      <div class="offices reveal d1">
+
+        <div class="office">
+          <div class="office-name">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            Oficina Central
+          </div>
+          <div class="office-phones">
+            <a class="office-phone is-tel" href="tel:+59842497204"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg>(+598) 4249 7204</a>
+            <a class="office-phone is-cel" href="https://wa.me/59892415537"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884"/></svg>(+598) 9241 5537</a>
+          </div>
+          <p class="office-addr">Calle Yaro esquina Joaquín Lenzina.<br>Punta del Este, Maldonado.<br>Torre del Plata II. Local 001</p>
+        </div>
+
+        <div class="office">
+          <div class="office-name">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            Oficina de Ventas
+          </div>
+          <div class="office-phones">
+            <a class="office-phone is-tel" href="tel:+59842479336"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg>(+598) 4247 9336</a>
+            <a class="office-phone is-tel" href="tel:+59842492397"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg>(+598) 4249 2397</a>
+          </div>
+          <p class="office-addr">Rambla Lorenzo Batlle Pacheco<br>Parada 2, Playa Brava.<br>Torre del Plata I. Local 002</p>
+        </div>
+
+        <div class="office">
+          <div class="office-name">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            Espacio Cowork
+          </div>
+          <div class="office-phones">
+            <a class="office-phone is-tel" href="tel:+59842436022"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg>(+598) 4243 6022</a>
+          </div>
+          <p class="office-addr">Calle Las Gaviotas casi calle El Mesana,<br>Punta del Este, Maldonado.<br>Edificio Michelangelo. Local 004</p>
+        </div>
+
+        <div class="office">
+          <div class="office-name">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            Showroom Modelo
+          </div>
+          <div class="office-phones">
+            <a class="office-phone is-tel" href="tel:+59842497204"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg>(+598) 4249 7204</a>
+            <a class="office-phone is-cel" href="https://wa.me/59891227676"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884"/></svg>(+598) 91 227 676</a>
+          </div>
+          <p class="office-addr">Calle El Corral (23) esq. Resalsero (26),<br>Punta del Este, Maldonado.<br>Edificio Modelo</p>
+        </div>
+
+        <div class="office">
+          <div class="office-name">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            Showroom Margherita
+          </div>
+          <div class="office-phones">
+            <a class="office-phone is-tel" href="tel:+59842497204"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg>(+598) 4249 7204</a>
+            <a class="office-phone is-cel" href="https://wa.me/59891783314"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884"/></svg>(+598) 91 783 314</a>
+          </div>
+          <p class="office-addr">Calle Resalsero (26) esq. Comodoro Gorlero (19),<br>Punta del Este, Maldonado.<br>Edificio Margherita</p>
+        </div>
+
+        <div class="office">
+          <div class="office-name">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            Oficina Montevideo
+          </div>
+          <div class="office-phones">
+            <a class="office-phone is-cel" href="https://wa.me/59892415537"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884"/></svg>(+598) 9241 5537</a>
+          </div>
+          <p class="office-addr">Plaza Independencia N° 759,<br>Torre Bahía, Oficina N° 957<br>Montevideo</p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="foot-inner">
+      <div class="foot-top">
+        <div class="foot-logo">
+          <img src="logo-white-trim.png" alt="Nicolás de Módena Inmobiliaria" />
+          <p class="foot-desc">Más de 25 años acompañando a familias e inversores en las decisiones inmobiliarias más importantes de su vida en Uruguay.</p>
+        </div>
+        <div class="foot-col">
+          <h4>Propiedades</h4>
+          <ul>
+            <li><a href="#">Apartamentos</a></li>
+            <li><a href="#">Casas</a></li>
+            <li><a href="#">Chacras y campos</a></li>
+            <li><a href="#">Terrenos</a></li>
+            <li><a href="#">Locales comerciales</a></li>
+          </ul>
+        </div>
+        <div class="foot-col">
+          <h4>Empresa</h4>
+          <ul>
+            <li><a href="#nosotros">Nosotros</a></li>
+            <li><a href="#emprendimientos">Emprendimientos</a></li>
+            <li><a href="#contacto">Publicá tu propiedad</a></li>
+            <li><a href="#zonas">Zonas</a></li>
+          </ul>
+        </div>
+        <div class="foot-col">
+          <h4>Contacto</h4>
+          <div class="foot-contact-item"><strong>Oficina</strong>Gorlero 900, Punta del Este<br>Maldonado, Uruguay</div>
+          <div class="foot-contact-item"><strong>Teléfono</strong>(+598) 4249 7204</div>
+          <div class="foot-contact-item"><strong>Email</strong>info@nicolasdemodena.com</div>
+        </div>
+      </div>
+      <div class="foot-bottom">
+        <p class="foot-copy">© 2026 Nicolás de Módena Inmobiliaria. Todos los derechos reservados.</p>
+        <nav class="foot-social">
+          <a href="#">Instagram</a><a href="#">Facebook</a><a href="#">LinkedIn</a><a href="#">WhatsApp</a>
+        </nav>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Smooth scroll + scroll animation libs -->
+  <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+  <script>
+  (function () {
+    'use strict';
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    /* ── Premium arrow cursor ── */
+    (function cursor() {
+      if (reduce || !window.matchMedia('(pointer:fine)').matches) return;
+      const arrow = document.getElementById('cursorArrow');
+      const label = document.getElementById('cursorLabel');
+      if (!arrow) return;
+      document.body.classList.add('cursor-none');
+      let tx = innerWidth / 2, ty = innerHeight / 2, x = tx, y = ty, shown = false;
+      window.addEventListener('mousemove', e => {
+        tx = e.clientX; ty = e.clientY;
+        if (!shown) { shown = true; document.documentElement.classList.add('cursor-ready'); }
+      }, { passive: true });
+      (function loop() {
+        // light smoothing for a refined feel without lag
+        x += (tx - x) * 0.35; y += (ty - y) * 0.35;
+        arrow.style.transform = `translate(${x}px, ${y}px)`;
+        requestAnimationFrame(loop);
+      })();
+      const hoverSel = 'a, button, .field, .search-tab, .pcard-fav, .plogo, input, .form-input';
+      const dragSel = '.h-track, .pcard';
+      document.addEventListener('mouseover', e => {
+        if (e.target.closest(dragSel)) { arrow.classList.add('is-drag'); if (label) label.textContent = 'Deslizá'; }
+        else if (e.target.closest(hoverSel)) arrow.classList.add('is-hover');
+      });
+      document.addEventListener('mouseout', e => {
+        if (e.target.closest(dragSel)) arrow.classList.remove('is-drag');
+        if (e.target.closest(hoverSel)) arrow.classList.remove('is-hover');
+      });
+      document.addEventListener('mousedown', () => arrow.classList.add('is-down'));
+      document.addEventListener('mouseup', () => arrow.classList.remove('is-down'));
+      document.addEventListener('mouseleave', () => document.documentElement.classList.remove('cursor-ready'));
+      document.addEventListener('mouseenter', () => document.documentElement.classList.add('cursor-ready'));
+    })();
+
+    /* ── NAV scroll state ── */
+    const nav = document.getElementById('nav');
+    const onScrollNav = () => nav.classList.toggle('scrolled', window.scrollY > 40);
+    onScrollNav();
+
+    /* ── Progress bar ── */
+    const progress = document.getElementById('progress');
+    function updateProgress(scroll) {
+      const h = document.documentElement.scrollHeight - window.innerHeight;
+      const p = h > 0 ? (scroll / h) : 0;
+      progress.style.transform = 'scaleX(' + p + ')';
+    }
+
+    /* ── Hero entrance (eyebrow, sub, search) ── */
+    if (!reduce) {
+      document.querySelectorAll('.hero-eyebrow, .hero-sub, .search-card, .hero-foot').forEach((el, i) => {
+        el.animate(
+          [{ opacity: 0, transform: 'translateY(22px)' }, { opacity: 1, transform: 'translateY(0)' }],
+          { duration: 900, delay: 350 + i * 120, easing: 'cubic-bezier(0.22,1,0.36,1)', fill: 'both' }
+        );
+      });
+    }
+
+    /* ── Rotating headline ── */
+    (function rotator() {
+      const title = document.getElementById('heroTitle');
+      if (!title) return;
+      const phrases = Array.from(title.querySelectorAll('.rot-phrase'));
+
+      function split(p) {
+        if (p.classList.contains('js-split')) return p.querySelectorAll('.rot-word');
+        const text = p.dataset.text || '';
+        const words = text.split(' ');
+        p.textContent = '';
+        p.classList.add('js-split');
+        words.forEach((w, i) => {
+          const s = document.createElement('span');
+          s.className = 'rot-word';
+          s.textContent = w + (i < words.length - 1 ? ' ' : '');
+          p.appendChild(s);
+        });
+        return p.querySelectorAll('.rot-word');
+      }
+
+      // Build words + measure tallest phrase to lock height (no layout shift)
+      function measure() {
+        let maxH = 0;
+        phrases.forEach(p => {
+          split(p);
+          const pos = p.style.position, vis = p.style.visibility, op = p.style.opacity;
+          p.style.position = 'relative'; p.style.visibility = 'hidden'; p.style.opacity = '0';
+          p.classList.add('active');
+          maxH = Math.max(maxH, p.offsetHeight);
+          p.classList.remove('active');
+          p.style.position = pos; p.style.visibility = vis; p.style.opacity = op;
+        });
+        title.style.setProperty('--rot-h', maxH + 'px');
+      }
+      measure();
+      let rt; window.addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(measure, 200); });
+
+      phrases.forEach(p => { p.classList.remove('active'); });
+      let idx = 0;
+
+      function animIn(p) {
+        p.classList.add('active');
+        if (reduce) return;
+        p.querySelectorAll('.rot-word').forEach((w, i) => {
+          w.animate(
+            [{ opacity: 0, transform: 'translateY(0.55em)', filter: 'blur(8px)' },
+             { opacity: 1, transform: 'translateY(0)', filter: 'blur(0)' }],
+            { duration: 720, delay: 250 + i * 55, easing: 'cubic-bezier(0.16,1,0.3,1)', fill: 'both' }
+          );
+        });
+      }
+      function animOut(p) {
+        if (reduce) { p.classList.remove('active'); return Promise.resolve(); }
+        const words = Array.from(p.querySelectorAll('.rot-word'));
+        return Promise.all(words.map((w, i) => w.animate(
+          [{ opacity: 1, transform: 'translateY(0)', filter: 'blur(0)' },
+           { opacity: 0, transform: 'translateY(-0.4em)', filter: 'blur(6px)' }],
+          { duration: 460, delay: i * 22, easing: 'cubic-bezier(0.7,0,0.84,0)', fill: 'both' }
+        ).finished)).then(() => p.classList.remove('active'));
+      }
+
+      animIn(phrases[idx]);
+      const hold = reduce ? 4200 : 3600;
+      setInterval(() => {
+        const cur = phrases[idx];
+        const ni = (idx + 1) % phrases.length;
+        animOut(cur).then(() => { idx = ni; animIn(phrases[ni]); });
+      }, hold);
+    })();
+
+    /* ── Hero slideshow ── */
+    let slide = 0;
+    const imgs = document.querySelectorAll('.hero-bg-img');
+    const dots = document.querySelectorAll('#heroDots button');
+    function go(i) {
+      imgs[slide].classList.remove('active'); dots[slide].classList.remove('active');
+      slide = i;
+      imgs[slide].classList.add('active'); dots[slide].classList.add('active');
+    }
+    dots.forEach((d, i) => d.addEventListener('click', () => go(i)));
+    setInterval(() => go((slide + 1) % imgs.length), 6500);
+
+    /* ── Custom dropdowns ── */
+    document.querySelectorAll('.field').forEach(field => {
+      const valEl = field.querySelector('.fv-text');
+      field.addEventListener('click', e => {
+        if (e.target.closest('.field-pop')) return;
+        const wasOpen = field.classList.contains('open');
+        document.querySelectorAll('.field.open').forEach(f => f.classList.remove('open'));
+        field.classList.toggle('open', !wasOpen);
+      });
+      field.querySelectorAll('.pop-item').forEach(item => {
+        item.addEventListener('click', () => {
+          field.querySelectorAll('.pop-item').forEach(p => p.classList.remove('selected'));
+          item.classList.add('selected');
+          valEl.textContent = item.textContent;
+          field.classList.remove('open');
+        });
+      });
+    });
+    document.addEventListener('click', e => {
+      if (!e.target.closest('.field')) document.querySelectorAll('.field.open').forEach(f => f.classList.remove('open'));
+    });
+
+    /* ── Property type tabs ── */
+    document.querySelectorAll('.search-tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        document.querySelectorAll('.search-tab').forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+      });
+    });
+
+    /* ── Mobile menu ── */
+    const mm = document.getElementById('mobileMenu');
+    document.getElementById('burger').addEventListener('click', () => mm.classList.add('open'));
+    document.getElementById('mmClose').addEventListener('click', () => mm.classList.remove('open'));
+    mm.querySelectorAll('a').forEach(a => a.addEventListener('click', () => mm.classList.remove('open')));
+
+    /* ── Reveal on scroll (content-safe) ── */
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(en => { if (en.isIntersecting) { en.target.classList.add('in'); io.unobserve(en.target); } });
+    }, { threshold: 0.12, rootMargin: '0px 0px -50px 0px' });
+    document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+    /* ── Count up ── */
+    const counted = new WeakSet();
+    function countUp(el) {
+      if (counted.has(el)) return; counted.add(el);
+      const target = parseInt(el.dataset.count, 10);
+      const suffix = el.dataset.suffix || '';
+      if (reduce) { el.textContent = target.toLocaleString('es') + suffix; return; }
+      const dur = 1600, t0 = performance.now();
+      function tick(now) {
+        const p = Math.min((now - t0) / dur, 1);
+        const eased = 1 - Math.pow(1 - p, 3);
+        el.textContent = Math.round(target * eased).toLocaleString('es') + suffix;
+        if (p < 1) requestAnimationFrame(tick);
+      }
+      requestAnimationFrame(tick);
+    }
+    const ioCount = new IntersectionObserver((entries) => {
+      entries.forEach(en => { if (en.isIntersecting) { countUp(en.target); ioCount.unobserve(en.target); } });
+    }, { threshold: 0.5 });
+    document.querySelectorAll('[data-count]').forEach(el => ioCount.observe(el));
+
+    /* ── Lenis smooth scroll + GSAP scroll effects ── */
+    let lenis = null;
+    if (!reduce && window.Lenis) {
+      lenis = new Lenis({ duration: 1.1, easing: t => Math.min(1, 1.001 - Math.pow(2, -10 * t)), smoothWheel: true });
+      function raf(time) { lenis.raf(time); requestAnimationFrame(raf); }
+      requestAnimationFrame(raf);
+      lenis.on('scroll', ({ scroll }) => { onScrollNav(); updateProgress(scroll); });
+    } else {
+      window.addEventListener('scroll', () => { onScrollNav(); updateProgress(window.scrollY); }, { passive: true });
+    }
+
+    if (!reduce && window.gsap && window.ScrollTrigger) {
+      gsap.registerPlugin(ScrollTrigger);
+      if (lenis) {
+        lenis.on('scroll', ScrollTrigger.update);
+        gsap.ticker.add((t) => lenis.raf(t * 1000));
+        gsap.ticker.lagSmoothing(0);
+      }
+
+      /* Hero background parallax */
+      gsap.to('#heroBg', {
+        yPercent: 14, ease: 'none',
+        scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: true }
+      });
+
+      /* About image parallax */
+      gsap.fromTo('#aboutImg', { yPercent: -6 }, {
+        yPercent: 6, ease: 'none',
+        scrollTrigger: { trigger: '.about-visual', start: 'top bottom', end: 'bottom top', scrub: true }
+      });
+
+      /* Horizontal scroll for featured (desktop only) */
+      const track = document.getElementById('hTrack');
+      const mm2 = gsap.matchMedia();
+      mm2.add('(min-width: 900px)', () => {
+        track.classList.add('gsap-on');
+        const amount = () => Math.max(0, track.scrollWidth - track.clientWidth + (window.innerWidth * 0.06));
+        const tween = gsap.to(track, {
+          x: () => -amount(),
+          ease: 'none',
+          scrollTrigger: {
+            trigger: '.featured',
+            start: 'top top',
+            end: () => '+=' + amount(),
+            pin: '#hPin',
+            pinSpacing: true,
+            anticipatePin: 1,
+            scrub: 1,
+            invalidateOnRefresh: true
+          }
+        });
+        return () => { track.classList.remove('gsap-on'); gsap.set(track, { x: 0 }); tween.scrollTrigger && tween.scrollTrigger.kill(); tween.kill(); };
+      });
+
+      ScrollTrigger.refresh();
+    }
+
+    /* Anchor smooth scroll via Lenis when present */
+    document.querySelectorAll('a[href^="#"]').forEach(link => {
+      link.addEventListener('click', e => {
+        const id = link.getAttribute('href');
+        if (id === '#' || id.length < 2) return;
+        const target = document.querySelector(id);
+        if (!target) return;
+        e.preventDefault();
+        if (lenis) lenis.scrollTo(target, { offset: -70 });
+        else target.scrollIntoView({ behavior: 'smooth' });
+      });
+    });
+  })();
+  </script>
+</body>
+</html>
